@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Outback Investor – Strategy B Rebalance</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{
+      --bg:#0b0b0c;
+      --card:#141416;
+      --text:#f3f3f4;
+      --muted:#b7b7bb;
+      --border:#2a2a2f;
+      --accent:#d7b56d;
+      --good:#7CFFB2;
+      --warn:#ffd36a;
+      --bad:#ff6b6b;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0; background:linear-gradient(180deg,#070708, #0b0b0c 35%, #070708);
+      color:var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    }
+    header{
+      position:sticky; top:0; z-index:9;
+      background:rgba(11,11,12,.92);
+      backdrop-filter: blur(8px);
+      border-bottom:1px solid var(--border);
+    }
+    .wrap{ max-width:1100px; margin:0 auto; padding:18px 16px; }
+    .brand{
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+    }
+    .brand h1{
+      margin:0; font-size:18px; letter-spacing:.5px;
+    }
+    .tag{
+      font-size:12px; color:var(--muted);
+    }
+    .pill{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:8px 10px; border:1px solid var(--border);
+      border-radius:999px; color:var(--muted); font-size:12px;
+    }
+    .grid{ display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+    @media (max-width: 980px){ .grid{ grid-template-columns:1fr; } }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+    }
+    h2{ margin:0 0 8px; font-size:16px; }
+    h3{ margin:14px 0 8px; font-size:13px; color:var(--muted); font-weight:600; letter-spacing:.3px; text-transform:uppercase; }
+    label{ display:block; font-size:12px; color:var(--muted); margin:10px 0 6px; }
+    input, select{
+      width:100%;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:#0f0f12;
+      color:var(--text);
+      font-size:14px;
+      outline:none;
+    }
+    input:focus{ border-color: rgba(215,181,109,.7); box-shadow: 0 0 0 3px rgba(215,181,109,.12); }
+    .row{ display:flex; gap:10px; }
+    .row > div{ flex:1; }
+    .btnrow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+    button{
+      border:1px solid var(--border);
+      background:#0f0f12;
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:600;
+      font-size:13px;
+    }
+    button.primary{
+      border-color: rgba(215,181,109,.6);
+      background: rgba(215,181,109,.18);
+    }
+    button:hover{ filter:brightness(1.08); }
+    .note{ font-size:12px; color:var(--muted); margin-top:8px; line-height:1.45; }
+    .kpi{
+      display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-top:10px;
+    }
+    .kpi .box{
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:10px;
+      background:#0f0f12;
+    }
+    .kpi .t{ font-size:11px; color:var(--muted); }
+    .kpi .v{ font-size:14px; font-weight:700; margin-top:4px; }
+    .ok{ color:var(--good); }
+    .warn{ color:var(--warn); }
+    table{
+      width:100%;
+      border-collapse: collapse;
+      margin-top:10px;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--border);
+    }
+    th, td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--border);
+      text-align:left;
+      font-size:13px;
+    }
+    th{ color:var(--muted); font-size:12px; background:#101014; }
+    tr:last-child td{ border-bottom:none; }
+    .right{ text-align:right; }
+    .small{ font-size:12px; color:var(--muted); }
+    .charts{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    @media (max-width: 700px){ .charts{ grid-template-columns:1fr; } }
+    canvas{ max-height:280px; }
+    .footer{ padding:18px 0 30px; color:var(--muted); font-size:12px; text-align:center; }
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 10px; border-radius:999px; border:1px solid var(--border);
+      background:#0f0f12; color:var(--muted); font-size:12px;
+    }
+    .badge b{ color:var(--text); font-weight:700; }
+    .splitHead{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="wrap brand">
+    <div>
+      <h1>Outback Investor</h1>
+      <div class="tag">Strategy B (Rounded) • Rebalance with new money only • Min $50 per buy</div>
+    </div>
+    <div class="pill">
+      <span>Targets:</span>
+      <b style="color:var(--text)">ASIA 23.5%</b>
+      <b style="color:var(--text)">NDQ 19.5%</b>
+      <b style="color:var(--text)">QBTC 17.5%</b>
+      <b style="color:var(--text)">A200 13%</b>
+      <b style="color:var(--text)">IVV 13%</b>
+      <b style="color:var(--text)">PMGOLD 13.5%</b>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="grid">
+    <!-- CHILD 1 -->
+    <section class="card" id="c1">
+      <div class="splitHead">
+        <h2>Child 1</h2>
+        <span class="badge">Mode: <b>Cheat-Sheet</b></span>
+      </div>
+
+      <h3>Inputs</h3>
+      <div class="row">
+        <div>
+          <label>Contribution this trade ($)</label>
+          <input id="c1_contrib" type="number" value="250" step="1" min="0" />
+        </div>
+        <div>
+          <label>Min order size ($)</label>
+          <input id="c1_minBuy" type="number" value="50" step="1" min="1" />
+        </div>
+      </div>
+
+      <div class="btnrow">
+        <button class="primary" onclick="setContrib('c1', 480)">Next trade $480</button>
+        <button onclick="setContrib('c1', 250)">$250 fortnight</button>
+        <button onclick="setContrib('c1', 50)">$50 fortnight</button>
+        <button onclick="run('c1')">Calculate</button>
+      </div>
+
+      <h3>Cash tracking</h3>
+      <div class="row">
+        <div>
+          <label>Betashares cash available ($)</label>
+          <input id="c1_cash_bs" type="number" value="1382.20" step="0.01" />
+        </div>
+        <div>
+          <label>Spaceship cash to consolidate ($)</label>
+          <input id="c1_cash_ss" type="number" value="2528.00" step="0.01" />
+        </div>
+      </div>
+
+      <h3>Current holdings ($)</h3>
+      <div class="row">
+        <div><label>ASIA</label><input id="c1_ASIA" type="number" value="805.16" step="0.01"/></div>
+        <div><label>NDQ</label><input id="c1_NDQ" type="number" value="521.03" step="0.01"/></div>
+      </div>
+      <div class="row">
+        <div><label>QBTC</label><input id="c1_QBTC" type="number" value="433.36" step="0.01"/></div>
+        <div><label>A200</label><input id="c1_A200" type="number" value="430.29" step="0.01"/></div>
+      </div>
+      <div class="row">
+        <div><label>IVV</label><input id="c1_IVV" type="number" value="330.77" step="0.01"/></div>
+        <div><label>PMGOLD</label><input id="c1_PMGOLD" type="number" value="321.35" step="0.01"/></div>
+      </div>
+
+      <div class="kpi">
+        <div class="box">
+          <div class="t">Invested this trade</div>
+          <div class="v" id="c1_k_invested">$0</div>
+        </div>
+        <div class="box">
+          <div class="t">Remainder cash</div>
+          <div class="v" id="c1_k_rem">$0</div>
+        </div>
+        <div class="box">
+          <div class="t">Post-trade total</div>
+          <div class="v" id="c1_k_total">$0</div>
+        </div>
+      </div>
+
+      <div class="note" id="c1_summary"></div>
+
+      <h3>What to buy (this trade)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>ETF</th>
+            <th class="right">Buy $</th>
+            <th class="right">New Value $</th>
+            <th class="right">New %</th>
+          </tr>
+        </thead>
+        <tbody id="c1_table"></tbody>
+      </table>
+
+      <h3>Charts</h3>
+      <div class="charts">
+        <div class="card" style="padding:10px;">
+          <div class="small"><b>Current allocation</b></div>
+          <canvas id="c1_chartCurrent"></canvas>
+        </div>
+        <div class="card" style="padding:10px;">
+          <div class="small"><b>Post-trade allocation</b></div>
+          <canvas id="c1_chartNew"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHILD 2 -->
+    <section class="card" id="c2">
+      <div class="splitHead">
+        <h2>Child 2</h2>
+        <span class="badge">Mode: <b>Cheat-Sheet</b></span>
+      </div>
+
+      <h3>Inputs</h3>
+      <div class="row">
+        <div>
+          <label>Contribution this trade ($)</label>
+          <input id="c2_contrib" type="number" value="250" step="1" min="0" />
+        </div>
+        <div>
+          <label>Min order size ($)</label>
+          <input id="c2_minBuy" type="number" value="50" step="1" min="1" />
+        </div>
+      </div>
+
+      <div class="btnrow">
+        <button class="primary" onclick="setContrib('c2', 480)">Next trade $480</button>
+        <button onclick="setContrib('c2', 250)">$250 fortnight</button>
+        <button onclick="setContrib('c2', 50)">$50 fortnight</button>
+        <button onclick="run('c2')">Calculate</button>
+      </div>
+
+      <h3>Cash tracking</h3>
+      <div class="row">
+        <div>
+          <label>Betashares cash available ($)</label>
+          <input id="c2_cash_bs" type="number" value="2130.46" step="0.01" />
+        </div>
+        <div>
+          <label>Spaceship cash to consolidate ($)</label>
+          <input id="c2_cash_ss" type="number" value="2528.00" step="0.01" />
+        </div>
+      </div>
+
+      <h3>Current holdings ($)</h3>
+      <div class="row">
+        <div><label>ASIA</label><input id="c2_ASIA" type="number" value="805.38" step="0.01"/></div>
+        <div><label>NDQ</label><input id="c2_NDQ" type="number" value="521.00" step="0.01"/></div>
+      </div>
+      <div class="row">
+        <div><label>QBTC</label><input id="c2_QBTC" type="number" value="433.30" step="0.01"/></div>
+        <div><label>A200</label><input id="c2_A200" type="number" value="430.37" step="0.01"/></div>
+      </div>
+      <div class="row">
+        <div><label>IVV</label><input id="c2_IVV" type="number" value="329.67" step="0.01"/></div>
+        <div><label>PMGOLD</label><input id="c2_PMGOLD" type="number" value="322.27" step="0.01"/></div>
+      </div>
+
+      <div class="kpi">
+        <div class="box">
+          <div class="t">Invested this trade</div>
+          <div class="v" id="c2_k_invested">$0</div>
+        </div>
+        <div class="box">
+          <div class="t">Remainder cash</div>
+          <div class="v" id="c2_k_rem">$0</div>
+        </div>
+        <div class="box">
+          <div class="t">Post-trade total</div>
+          <div class="v" id="c2_k_total">$0</div>
+        </div>
+      </div>
+
+      <div class="note" id="c2_summary"></div>
+
+      <h3>What to buy (this trade)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>ETF</th>
+            <th class="right">Buy $</th>
+            <th class="right">New Value $</th>
+            <th class="right">New %</th>
+          </tr>
+        </thead>
+        <tbody id="c2_table"></tbody>
+      </table>
+
+      <h3>Charts</h3>
+      <div class="charts">
+        <div class="card" style="padding:10px;">
+          <div class="small"><b>Current allocation</b></div>
+          <canvas id="c2_chartCurrent"></canvas>
+        </div>
+        <div class="card" style="padding:10px;">
+          <div class="small"><b>Post-trade allocation</b></div>
+          <canvas id="c2_chartNew"></canvas>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="card" style="margin-top:14px;">
+    <h2>How to use (fortnightly routine)</h2>
+    <div class="note">
+      1) Update each ETF value for Child 1 & 2 (copy from Betashares).<br/>
+      2) Set the contribution amount (use buttons for quick).<br/>
+      3) Hit <b>Calculate</b> — buy the ETFs shown with <b>Buy $</b> &gt; 0 (each is in $50 blocks).<br/>
+      4) Any amount &lt; $50 becomes remainder cash and rolls into the next trade (no selling needed).<br/>
+      5) Charts update automatically to show the “before vs after” allocation.
+    </div>
+  </div>
+
+  <div class="footer">Outback Investor • Strategy B • Rebalance with new money only • This is a planning tool (not financial advice).</div>
+</div>
+
+<script>
+  // Strategy B targets (rounded)
+  const targets = {
+    ASIA: 0.235,
+    NDQ: 0.195,
+    QBTC: 0.175,
+    A200: 0.13,
+    IVV: 0.13,
+    PMGOLD: 0.135
+  };
+  const order = ["ASIA","NDQ","QBTC","A200","IVV","PMGOLD"];
+
+  const charts = {
+    c1: { current:null, next:null },
+    c2: { current:null, next:null }
+  };
+
+  function fmtMoney(x){
+    return "$" + Number(x).toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+  function fmtMoney0(x){
+    return "$" + Number(x).toLocaleString(undefined,{minimumFractionDigits:0, maximumFractionDigits:0});
+  }
+  function sum(obj){ return Object.values(obj).reduce((a,b)=>a+b,0); }
+
+  function getVals(prefix){
+    const vals = {};
+    for (const k of order){
+      vals[k] = Number(document.getElementById(prefix+"_"+k).value || 0);
+    }
+    return vals;
+  }
+
+  // Greedy allocation in $minBuy blocks to the most underweight ETF.
+  function allocateGreedy(current, contribution, minBuy){
+    const invested = Math.floor(contribution / minBuy) * minBuy;
+    const remainder = contribution - invested;
+
+    const totalNow = sum(current);
+    const totalAfter = totalNow + invested;
+
+    // Underweights only (shortfall cannot be negative)
+    let shortfall = {};
+    for (const k of order){
+      const targetValue = totalAfter * targets[k];
+      shortfall[k] = Math.max(0, targetValue - current[k]);
+    }
+
+    let buys = {};
+    for (const k of order) buys[k] = 0;
+
+    const blocks = invested / minBuy;
+    for (let i=0; i<blocks; i++){
+      let pick = null, best = -1;
+      for (const k of order){
+        if (shortfall[k] > best){
+          best = shortfall[k];
+          pick = k;
+        }
+      }
+      // If everything is at/over target, just keep adding to the biggest growth sleeve (ASIA).
+      if (!pick || best <= 0) pick = "ASIA";
+
+      buys[pick] += minBuy;
+      shortfall[pick] = Math.max(0, shortfall[pick] - minBuy);
+    }
+
+    let newVals = {};
+    for (const k of order) newVals[k] = current[k] + buys[k];
+    const newTotal = sum(newVals);
+
+    let newPct = {};
+    for (const k of order) newPct[k] = newTotal === 0 ? 0 : newVals[k] / newTotal;
+
+    let curPct = {};
+    for (const k of order) curPct[k] = totalNow === 0 ? 0 : current[k] / totalNow;
+
+    return { buys, newVals, newPct, curPct, invested, remainder, totalNow, totalAfter:newTotal };
+  }
+
+  function setContrib(prefix, value){
+    document.getElementById(prefix+"_contrib").value = value;
+    run(prefix);
+  }
+
+  function renderTable(prefix, res){
+    const tbody = document.getElementById(prefix+"_table");
+    tbody.innerHTML = "";
+    for (const k of order){
+      const tr = document.createElement("tr");
+      const buy = res.buys[k];
+      tr.innerHTML = `
+        <td>${k}</td>
+        <td class="right"><b>${fmtMoney0(buy)}</b></td>
+        <td class="right">${fmtMoney(res.newVals[k])}</td>
+        <td class="right">${(res.newPct[k]*100).toFixed(1)}%</td>
+      `;
+      tbody.appendChild(tr);
+    }
+  }
+
+  function renderCharts(prefix, current, res){
+    const labels = order;
+    const curData = labels.map(k=>current[k]);
+    const newData = labels.map(k=>res.newVals[k]);
+
+    // Current chart
+    if (charts[prefix].current) charts[prefix].current.destroy();
+    charts[prefix].current = new Chart(document.getElementById(prefix+"_chartCurrent"), {
+      type: "doughnut",
+      data: { labels, datasets: [{ data: curData }] },
+      options: { plugins: { legend: { position: "bottom" } } }
+    });
+
+    // New chart
+    if (charts[prefix].next) charts[prefix].next.destroy();
+    charts[prefix].next = new Chart(document.getElementById(prefix+"_chartNew"), {
+      type: "doughnut",
+      data: { labels, datasets: [{ data: newData }] },
+      options: { plugins: { legend: { position: "bottom" } } }
+    });
+  }
+
+  function run(prefix){
+    const current = getVals(prefix);
+    const contribution = Number(document.getElementById(prefix+"_contrib").value || 0);
+    const minBuy = Number(document.getElementById(prefix+"_minBuy").value || 50);
+
+    const cashBS = Number(document.getElementById(prefix+"_cash_bs").value || 0);
+    const cashSS = Number(document.getElementById(prefix+"_cash_ss").value || 0);
+    const deployableCash = cashBS + cashSS;
+
+    const res = allocateGreedy(current, contribution, minBuy);
+
+    // KPIs
+    document.getElementById(prefix+"_k_invested").textContent = fmtMoney0(res.invested);
+    document.getElementById(prefix+"_k_rem").textContent = fmtMoney(res.remainder);
+    document.getElementById(prefix+"_k_total").textContent = fmtMoney(res.totalAfter);
+
+    // Summary
+    const summary = document.getElementById(prefix+"_summary");
+    const blocks = Math.floor(contribution / minBuy);
+    summary.innerHTML = `
+      Trade uses <b>${blocks}</b> blocks of <b>${fmtMoney0(minBuy)}</b> each (invested <b>${fmtMoney0(res.invested)}</b>).
+      Remainder <b>${fmtMoney(res.remainder)}</b> stays as cash for next time.
+      Total deployable cash tracked (Betashares + Spaceship): <b>${fmtMoney(deployableCash)}</b>.
+    `;
+
+    renderTable(prefix, res);
+    renderCharts(prefix, current, res);
+  }
+
+  // Auto-run on load
+  run("c1");
+  run("c2");
+</script>
+</body>
+</html>
