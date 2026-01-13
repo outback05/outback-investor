@@ -30,11 +30,13 @@
       margin:0;
       font-family:var(--sans);
       color:var(--text);
-      background: radial-gradient(1200px 700px at 20% 10%, rgba(214,162,74,.18), transparent 60%),
-                  radial-gradient(900px 600px at 80% 0%, rgba(255,224,130,.10), transparent 60%),
-                  var(--bg);
+      background:
+        radial-gradient(1200px 700px at 20% 10%, rgba(214,162,74,.18), transparent 60%),
+        radial-gradient(900px 600px at 80% 0%, rgba(255,224,130,.10), transparent 60%),
+        var(--bg);
     }
-    .wrap{max-width:1220px;margin:0 auto;padding:22px}
+    .wrap{max-width:1200px;margin:0 auto;padding:24px}
+    a{color:var(--accent)}
     .topbar{
       display:flex;align-items:center;gap:14px;
       background:rgba(22,26,34,.6);
@@ -54,61 +56,55 @@
     }
     .logo img{width:28px;height:28px;object-fit:contain;filter: drop-shadow(0 6px 10px rgba(0,0,0,.35));}
     .titles{display:flex;flex-direction:column;gap:2px}
-    .h1{font-size:18px;font-weight:900;letter-spacing:.2px}
+    .h1{font-size:18px;font-weight:800;letter-spacing:.2px}
     .h2{font-size:13px;color:var(--muted)}
-    .rightPill{
-      margin-left:auto;display:flex;align-items:center;gap:10px;
-      font-size:12px;color:var(--muted);
-    }
-    .badge{
-      font-size:11px;padding:6px 10px;border-radius:999px;
-      border:1px solid rgba(42,48,64,.85);color:var(--muted);
-    }
-    .badge.ok{color:var(--ok)}
-    .badge.err{color:var(--danger)}
+    .pill{margin-left:auto;display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px}
+    .badge{font-size:11px;padding:6px 10px;border-radius:999px;border:1px solid rgba(42,48,64,.85);color:var(--muted)}
+    .ok{color:var(--ok)}
+    .err{color:var(--danger)}
     .grid{
-      margin-top:16px;
+      margin-top:18px;
       display:grid;
-      grid-template-columns: 520px 1fr;
-      gap:14px;
+      grid-template-columns: 460px 1fr;
+      gap:16px;
     }
-    @media (max-width:1040px){ .grid{grid-template-columns:1fr} }
-
+    @media (max-width:1050px){ .grid{grid-template-columns:1fr} }
     .card{
       background:rgba(22,26,34,.75);
       border:1px solid rgba(42,48,64,.75);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
-      padding:14px;
+      padding:16px;
+      min-width:0;
     }
     .sectionTitle{
       display:flex;align-items:center;justify-content:space-between;
-      gap:10px;font-weight:900;font-size:14px;margin:0 0 10px 0;
-      letter-spacing:.2px;
+      gap:10px;font-weight:800;font-size:14px;margin:0 0 10px 0;letter-spacing:.2px;
     }
     .subtle{font-size:12px;color:var(--muted);line-height:1.35}
     .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
     label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
-    input,select,button{
+    input,button{
       font-family:inherit;
-      border-radius:12px;border:1px solid rgba(42,48,64,.9);
+      border-radius:12px;
+      border:1px solid rgba(42,48,64,.9);
       background: rgba(15,17,21,.75);
       color:var(--text);
-      padding:10px 12px;outline:none;
+      padding:10px 12px;
+      outline:none;
+      min-width:0;
     }
-    input:focus,select:focus{
-      border-color:rgba(214,162,74,.6);
-      box-shadow:0 0 0 3px rgba(214,162,74,.15)
-    }
-    .field{flex:1;min-width:170px}
+    input:focus{border-color:rgba(214,162,74,.6);box-shadow:0 0 0 3px rgba(214,162,74,.15)}
+    .field{flex:1;min-width:160px}
     .field.small{min-width:120px;flex:0 0 120px}
-    .field.tiny{min-width:90px;flex:0 0 90px}
+    .field.big{min-width:240px}
     .btn{
       cursor:pointer;
       border:1px solid rgba(214,162,74,.45);
       background: rgba(214,162,74,.12);
       color:var(--text);
-      font-weight:800;
+      font-weight:700;
+      padding:10px 14px;
     }
     .btn:hover{background: rgba(214,162,74,.18)}
     .btn2{
@@ -116,17 +112,10 @@
       border:1px solid rgba(42,48,64,.9);
       background: rgba(15,17,21,.55);
       color:var(--text);
-      font-weight:800;
+      font-weight:700;
+      padding:10px 14px;
     }
     .btn2:hover{background: rgba(15,17,21,.85)}
-    .btnDanger{
-      cursor:pointer;
-      border:1px solid rgba(255,92,92,.45);
-      background: rgba(255,92,92,.10);
-      color:var(--text);
-      font-weight:800;
-    }
-    .btnDanger:hover{background: rgba(255,92,92,.18)}
     .btnQuick{
       padding:8px 10px;border-radius:10px;font-size:12px;
       border:1px solid rgba(42,48,64,.9);
@@ -141,32 +130,48 @@
       font-weight:900;
     }
     .boldYellow{
-      color:#111;background: var(--yellow2);
-      padding:6px 10px;border-radius:12px;font-weight:900;display:inline-block;
+      color:#111;
+      background: var(--yellow2);
+      padding:6px 10px;
+      border-radius:12px;
+      font-weight:900;
+      display:inline-block;
     }
-    .hr{height:1px;background:rgba(42,48,64,.75);margin:12px 0}
-    .money{font-variant-numeric: tabular-nums}
-    .tableWrap{overflow:auto;max-width:100%}
-    table{width:100%;border-collapse:separate;border-spacing:0 10px;margin-top:8px;min-width:680px}
-    th{text-align:left;font-size:11px;color:var(--muted);font-weight:800;padding:0 10px;white-space:nowrap}
-    td{
+    .hr{height:1px;background:rgba(42,48,64,.75);margin:14px 0}
+    .table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0 10px;
+      margin-top:8px;
+    }
+    .table th{
+      text-align:left;
+      font-size:11px;
+      color:var(--muted);
+      font-weight:700;
+      padding:0 10px;
+      white-space:nowrap;
+    }
+    .table td{
       padding:10px;
       background: rgba(15,17,21,.55);
       border:1px solid rgba(42,48,64,.75);
       vertical-align:middle;
     }
-    tr td:first-child{border-radius:12px 0 0 12px}
-    tr td:last-child{border-radius:0 12px 12px 0}
+    .table tr td:first-child{border-radius:12px 0 0 12px}
+    .table tr td:last-child{border-radius:0 12px 12px 0}
     .tickerCell{
-      background: rgba(255,224,130,.10);
-      border:1px solid rgba(255,224,130,.35);
+      background: rgba(214,162,74,.12);
+      border:1px solid rgba(214,162,74,.35);
+      border-radius:12px;
+      padding:10px 12px;
       font-family:var(--mono);
       font-weight:900;
-      letter-spacing:.3px;
+      color:#fff; /* ticker text white */
       text-transform:uppercase;
-      color:#fff; /* ticker text WHITE */
-      white-space:nowrap;
+      letter-spacing:.3px;
     }
+    .money{font-variant-numeric: tabular-nums}
     .right{text-align:right}
     .center{text-align:center}
     .twoCharts{
@@ -175,22 +180,32 @@
       gap:12px;
       align-items:stretch;
     }
-    @media (max-width:780px){.twoCharts{grid-template-columns:1fr}}
+    @media (max-width:780px){ .twoCharts{grid-template-columns:1fr} }
     canvas{max-width:100%}
-    .modalBack{
-      position:fixed;inset:0;background:rgba(0,0,0,.65);
-      display:none;align-items:center;justify-content:center;padding:18px;z-index:9999;
+
+    /* Desktop layout fix: keep holdings grid stable */
+    .holdingsWrap{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
     }
-    .modal{
-      width:min(560px, 100%);
-      background: rgba(22,26,34,.92);
-      border:1px solid rgba(42,48,64,.85);
-      box-shadow:var(--shadow);
-      border-radius:18px;
-      padding:16px;
+
+    /* Compact inputs in holdings rows */
+    .tinyInput{
+      padding:8px 10px;
+      border-radius:10px;
     }
-    .modalTitle{font-size:16px;font-weight:900;margin:0 0 8px}
-    .hint{font-size:12px;color:var(--muted);margin:0 0 10px;line-height:1.35}
+    .delBtn{
+      cursor:pointer;
+      border:1px solid rgba(255,92,92,.55);
+      background: rgba(255,92,92,.12);
+      color:var(--text);
+      font-weight:800;
+      padding:8px 10px;
+      border-radius:10px;
+    }
+    .delBtn:hover{background: rgba(255,92,92,.18)}
+    .footnote{font-size:11px;color:var(--muted);line-height:1.35;margin-top:10px}
   </style>
 </head>
 
@@ -202,12 +217,11 @@
       <img id="logoImg" alt="Outback Investor logo" />
     </div>
     <div class="titles">
-      <div class="h1">Outback Investor <span style="opacity:.7">/</span> Generic Rebalance Builder</div>
-      <div class="h2">Rebalance with new money only • Min buy $50 • Add up to 50 holdings</div>
+      <div class="h1">Outback Investor <span style="opacity:.7">/</span> Rebalance Guide</div>
+      <div class="h2">Generic Builder • Rebalance with new money only • Min $50 per buy • Max 50 holdings</div>
     </div>
-    <div class="rightPill">
-      <span class="badge" id="statusBadge">Ready</span>
-      <button class="btn2" id="saveBtnTop" type="button">Save</button>
+    <div class="pill">
+      <span class="badge" id="statusBadge">Saved locally</span>
     </div>
   </div>
 
@@ -217,18 +231,18 @@
     <div class="card">
       <div class="sectionTitle">Welcome</div>
 
-      <div class="row">
-        <div class="field">
+      <!-- Contribution + Calculate beside it -->
+      <div class="row" style="align-items:flex-end;">
+        <div class="field big">
           <label><strong>New Contribution ($)</strong></label>
-          <input id="contribution" class="highlightInput money" inputmode="decimal" placeholder="e.g. 480" value="0" />
+          <input id="contribution" class="highlightInput money" inputmode="decimal" placeholder="e.g. 500" value="0" />
         </div>
-        <!-- Calculate beside contribution -->
-        <div class="field small">
-          <button class="btn" id="calcBtn" type="button" style="width:100%;">Calculate</button>
+        <div class="field small" style="flex:0 0 auto;min-width:auto">
+          <button class="btn" id="calcBtn" type="button" style="height:44px;">Calculate</button>
         </div>
       </div>
 
-      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
         <button class="btnQuick" type="button" data-q="50">$50</button>
         <button class="btnQuick" type="button" data-q="100">$100</button>
         <button class="btnQuick" type="button" data-q="150">$150</button>
@@ -240,15 +254,18 @@
 
       <div class="hr"></div>
 
-      <div class="sectionTitle"><span class="boldYellow">Cash tracking</span></div>
+      <div class="sectionTitle">
+        <span class="boldYellow">Cash tracking</span>
+      </div>
+
       <div class="row">
         <div class="field">
           <label>Cash Available to invest ($)</label>
-          <input id="cashAvailable" class="money" inputmode="decimal" value="0" />
+          <input id="cashBetashares" class="money" inputmode="decimal" value="0" />
         </div>
         <div class="field">
           <label>Extra Cash Available to invest or consolidate ($)</label>
-          <input id="extraCash" class="money" inputmode="decimal" value="0" />
+          <input id="cashExtra" class="money" inputmode="decimal" value="0" />
         </div>
       </div>
 
@@ -257,8 +274,8 @@
           <label>Leftover cash for next investment ($)</label>
           <input id="cashRemainder" class="money" inputmode="decimal" value="0" />
         </div>
-        <div class="field tiny">
-          <label>Min buy</label>
+        <div class="field small">
+          <label>Min buy ($)</label>
           <input id="minBuy" class="money" inputmode="decimal" value="50" />
         </div>
       </div>
@@ -267,28 +284,28 @@
 
       <div class="sectionTitle">
         <span class="boldYellow">Current holdings</span>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
           <button class="btn2" id="fetchBtn" type="button">Fetch prices</button>
           <button class="btn" id="addBtn" type="button">+ Add holding</button>
         </div>
       </div>
 
-      <div class="subtle">
+      <div class="subtle" style="margin-bottom:8px;">
         Enter Units and/or Price. Value auto-calculates immediately. Targets should total ~100%.
       </div>
 
-      <div class="row" style="margin-top:10px;">
+      <div class="row" style="margin-bottom:8px;">
         <div class="field">
           <label>Live pricing CSV URL (optional)</label>
-          <input id="csvUrl" class="money" placeholder="paste your published CSV URL here" />
+          <input id="csvUrl" placeholder="paste your published CSV url" />
         </div>
-        <div class="field tiny">
-          <button class="btn2" id="normalizeBtn" type="button" style="width:100%;">Normalize %</button>
+        <div class="field small">
+          <button class="btn2" id="normBtn" type="button" style="height:44px;width:100%">Normalize %</button>
         </div>
       </div>
 
-      <div class="tableWrap">
-        <table id="holdingsTable">
+      <div class="holdingsWrap">
+        <table class="table" id="holdingsTable">
           <thead>
             <tr>
               <th>Holdings (tickers)</th>
@@ -305,12 +322,12 @@
 
       <div class="row" style="margin-top:10px;">
         <button class="btn2" id="saveBtn" type="button">Save now</button>
-        <button class="btn2" id="resetBtn" type="button">Reset</button>
+        <button class="btn2" id="resetBtn" type="button">Clear all</button>
       </div>
 
-      <div class="subtle" style="margin-top:10px;">
-        <strong>Rebalance logic:</strong> Buy only (no selling). Allocate new money into underweight assets,
-        round each buy down to Min buy blocks. Any amount &lt; Min buy becomes leftover cash for next time.
+      <div class="footnote">
+        <strong>Rebalance logic:</strong> buy-only (no selling). Allocates new money into underweight assets, rounds down each buy
+        to <strong>$minBuy blocks</strong>. Anything under minBuy becomes leftover cash for next investment.
       </div>
     </div>
 
@@ -338,21 +355,19 @@
 
       <div class="hr"></div>
 
-      <div class="tableWrap">
-        <table id="buyTable" style="min-width:760px">
-          <thead>
-            <tr>
-              <th>Holdings (tickers)</th>
-              <th class="right">Current %</th>
-              <th class="right">Target %</th>
-              <th class="right">Diff</th>
-              <th class="right">Buy $</th>
-              <th class="right">New %</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
+      <table class="table" id="buyTable">
+        <thead>
+          <tr>
+            <th>Holdings (tickers)</th>
+            <th class="right">Current %</th>
+            <th class="right">Target %</th>
+            <th class="right">Diff</th>
+            <th class="right">Buy $</th>
+            <th class="right">New %</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
 
       <div class="hr"></div>
 
@@ -371,182 +386,156 @@
 
       <div class="sectionTitle">How to use (fortnightly routine)</div>
       <ol class="subtle" style="margin:0;padding-left:18px;line-height:1.5;">
-        <li>Update holdings (Units/Price) — or press <strong>Fetch prices</strong>.</li>
-        <li>Set the <strong>New Contribution</strong> and any Cash fields.</li>
-        <li>Press <strong>Calculate</strong> — buy items with <strong>Buy $ &gt; 0</strong> (in Min buy blocks).</li>
-        <li>Leftover cash rolls into the next contribution. No selling needed.</li>
+        <li>Update Units and/or Price (Value calculates automatically).</li>
+        <li>Set the new contribution amount (or use quick buttons).</li>
+        <li>Click <strong>Calculate</strong> — buy the assets shown with <strong>Buy $ &gt; 0</strong> (in <strong>$50 blocks</strong>).</li>
+        <li>Anything &lt; min buy becomes leftover cash for next investment.</li>
       </ol>
-    </div>
 
-  </div>
-</div>
-
-<!-- Add Holding Modal -->
-<div class="modalBack" id="modalBack">
-  <div class="modal">
-    <div class="modalTitle">Add holding</div>
-    <p class="hint">
-      Ticker is what you want displayed (e.g. NDQ). “Price Symbol” is what your price feed uses (optional).
-      Example: for ASX you might use <code>ASX:NDQ</code> in your Google Sheet.
-    </p>
-
-    <div class="row">
-      <div class="field">
-        <label>Ticker (display)</label>
-        <input id="mTicker" placeholder="e.g. NDQ" />
-      </div>
-      <div class="field">
-        <label>Target %</label>
-        <input id="mTarget" inputmode="decimal" placeholder="e.g. 19.5" />
+      <div class="footnote">
+        This generic builder saves locally (localStorage). If you open on another device, it starts fresh unless you re-enter values.
       </div>
     </div>
 
-    <div class="row" style="margin-top:10px;">
-      <div class="field">
-        <label>Price Symbol (optional)</label>
-        <input id="mSymbol" placeholder="e.g. ASX:NDQ or CURRENCY:XAU" />
-      </div>
-      <div class="field">
-        <label>Starting Units (optional)</label>
-        <input id="mUnits" inputmode="decimal" placeholder="e.g. 10" />
-      </div>
-      <div class="field">
-        <label>Starting Price (optional)</label>
-        <input id="mPrice" inputmode="decimal" placeholder="e.g. 25.50" />
-      </div>
-    </div>
-
-    <div class="row" style="margin-top:12px;justify-content:flex-end;">
-      <button class="btn2" id="mCancel" type="button">Cancel</button>
-      <button class="btn" id="mAdd" type="button">Add</button>
-    </div>
   </div>
 </div>
 
 <script>
-/* =========================
-   CONFIG
-========================= */
+/***********************
+ * CONFIG
+ ***********************/
 const LOGO_FILE = "outback_symbol_extracted.png";
-const STORAGE_KEY = "outback_investor_generic_v1";
+const STORAGE_KEY = "outback_generic_portfolio_v2";
 const MAX_HOLDINGS = 50;
 
-/* =========================
-   Helpers
-========================= */
-const $ = (id) => document.getElementById(id);
+// If your CSV contains columns like: ticker,price
+// (case-insensitive), we will match.
+function parseCSV(text){
+  const lines = text.trim().split(/\r?\n/);
+  const rows = lines.map(l => l.split(",").map(x=>x.trim()));
+  return rows;
+}
 
-const fmt = (n) => (isFinite(n) ? Number(n).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) : "0.00");
-const num = (v) => {
-  const x = parseFloat(String(v ?? "").replace(/[^0-9.\-]/g,""));
-  return isFinite(x) ? x : 0;
+/***********************
+ * Helpers
+ ***********************/
+const $ = (id)=>document.getElementById(id);
+const fmt = (n)=> (isFinite(n) ? n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}) : "0.00");
+const num = (v)=>{
+  const x = parseFloat(String(v).replace(/[^0-9.\-]/g,""));
+  return isFinite(x)?x:0;
 };
-const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
-const sum = (arr) => arr.reduce((a,b)=>a+b,0);
+const clamp = (n,min,max)=>Math.max(min,Math.min(max,n));
+const sum = (arr)=>arr.reduce((a,b)=>a+b,0);
 
-function setStatus(text, kind=""){
+function randColor(i){
+  // stable-ish vivid palette
+  const hues = [210, 300, 270, 30, 340, 160, 45, 190, 10, 120];
+  const h = hues[i % hues.length];
+  return `hsl(${h} 85% 55%)`;
+}
+
+function holdingsRows(){
+  return [...$("holdingsTable").querySelectorAll("tbody tr")];
+}
+
+function getHoldings(){
+  return holdingsRows().map(r=>{
+    const t = (r.querySelector('[data-role="ticker"]').value||"").trim().toUpperCase();
+    const target = num(r.querySelector('[data-role="target"]').value);
+    const units = num(r.querySelector('[data-role="units"]').value);
+    const price = num(r.querySelector('[data-role="price"]').value);
+    const value = num(r.querySelector('[data-role="value"]').value);
+    return { t, target, units, price, value };
+  }).filter(x=>x.t.length>0);
+}
+
+function setStatus(text, ok=true){
   $("statusBadge").textContent = text;
-  $("statusBadge").className = "badge" + (kind ? " "+kind : "");
-}
-function setSummary(text, kind=""){
-  $("summaryBadge").textContent = text;
-  $("summaryBadge").className = "badge" + (kind ? " "+kind : "");
+  $("statusBadge").className = "badge " + (ok ? "ok" : "err");
+  setTimeout(()=>{ $("statusBadge").textContent="Saved locally"; $("statusBadge").className="badge"; }, 900);
 }
 
-/* deterministic-ish color from string */
-function colorFromString(str){
-  let h = 0;
-  for (let i=0;i<str.length;i++) h = (h*31 + str.charCodeAt(i)) >>> 0;
-  const hue = h % 360;
-  return `hsl(${hue} 75% 55%)`;
+function autoValueForRow(r){
+  const units = num(r.querySelector('[data-role="units"]').value);
+  const price = num(r.querySelector('[data-role="price"]').value);
+  const v = (units>0 && price>0) ? (units*price) : 0;
+  if(v>0) r.querySelector('[data-role="value"]').value = fmt(v);
 }
 
-/* =========================
-   Data model
-   holdings: [{t, w, symbol, units, price}]
-========================= */
-let holdings = [];   // loaded from storage
+function attachRowListeners(r){
+  const onAny = ()=>{
+    autoValueForRow(r);
+    saveState();
+    // Also keep charts reasonably current without needing Calculate:
+    drawBeforeChart();
+  };
 
-/* =========================
-   DOM: build tables
-========================= */
-function buildHoldingsTable(){
+  ["input","change"].forEach(evt=>{
+    r.querySelector('[data-role="ticker"]').addEventListener(evt, ()=>{ saveState(); });
+    r.querySelector('[data-role="target"]').addEventListener(evt, ()=>{ saveState(); });
+    r.querySelector('[data-role="units"]').addEventListener(evt, onAny);
+    r.querySelector('[data-role="price"]').addEventListener(evt, onAny);
+    r.querySelector('[data-role="value"]').addEventListener(evt, ()=>{ saveState(); drawBeforeChart(); });
+  });
+
+  r.querySelector('[data-role="del"]').addEventListener("click", ()=>{
+    r.remove();
+    buildBuyTable();
+    saveState();
+    drawBeforeChart();
+  });
+}
+
+/***********************
+ * Build tables
+ ***********************/
+function addHoldingRow(seed={}){
   const tbody = $("holdingsTable").querySelector("tbody");
-  tbody.innerHTML = "";
-  holdings.forEach((h, idx)=>{
-    const tr = document.createElement("tr");
-    tr.dataset.idx = idx;
-    tr.innerHTML = `
-      <td class="tickerCell">${escapeHtml(h.t)}</td>
-      <td class="right"><input data-role="w" class="money" inputmode="decimal" value="${fmt(h.w)}"></td>
-      <td class="right"><input data-role="units" class="money" inputmode="decimal" value="${h.units ?? ""}"></td>
-      <td class="right"><input data-role="price" class="money" inputmode="decimal" value="${h.price ?? ""}"></td>
-      <td class="right"><input data-role="value" class="money" inputmode="decimal" value="${fmt(calcValue(h))}"></td>
-      <td class="center"><button class="btnDanger" data-role="del" type="button">X</button></td>
-    `;
-    tbody.appendChild(tr);
-  });
-
-  // wire events
-  [...tbody.querySelectorAll("tr")].forEach(tr=>{
-    const idx = Number(tr.dataset.idx);
-
-    const wEl = tr.querySelector('input[data-role="w"]');
-    const uEl = tr.querySelector('input[data-role="units"]');
-    const pEl = tr.querySelector('input[data-role="price"]');
-    const vEl = tr.querySelector('input[data-role="value"]');
-    const delBtn = tr.querySelector('button[data-role="del"]');
-
-    const recalcRow = () => {
-      holdings[idx].w = num(wEl.value);
-      holdings[idx].units = uEl.value === "" ? "" : num(uEl.value);
-      holdings[idx].price = pEl.value === "" ? "" : num(pEl.value);
-
-      // If units & price exist, compute value
-      if(holdings[idx].units !== "" && holdings[idx].price !== ""){
-        const v = calcValue(holdings[idx]);
-        vEl.value = fmt(v);
-      } else {
-        // allow manual value entry too:
-        const manual = num(vEl.value);
-        vEl.value = fmt(manual);
-      }
-
-      // Auto-update charts/buys as you type
-      autosave();
-      autoRecalc();
-    };
-
-    wEl.addEventListener("input", recalcRow);
-    uEl.addEventListener("input", recalcRow);
-    pEl.addEventListener("input", recalcRow);
-
-    vEl.addEventListener("input", ()=>{
-      // manual override if units/price are empty
-      autosave();
-      autoRecalc();
-    });
-
-    delBtn.addEventListener("click", ()=>{
-      holdings.splice(idx, 1);
-      buildHoldingsTable();
-      buildBuyTable();
-      autosave();
-      autoRecalc();
-    });
-  });
+  if(tbody.children.length >= MAX_HOLDINGS){
+    alert("Max holdings reached (50).");
+    return;
+  }
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td>
+      <input class="tickerCell tinyInput" data-role="ticker" placeholder="e.g. A200" value="${(seed.t||"").toUpperCase()}" />
+    </td>
+    <td class="right">
+      <input class="money tinyInput" data-role="target" inputmode="decimal" value="${seed.target!=null ? fmt(seed.target) : "0"}" />
+    </td>
+    <td class="right">
+      <input class="money tinyInput" data-role="units" inputmode="decimal" value="${seed.units!=null ? fmt(seed.units) : ""}" placeholder="0" />
+    </td>
+    <td class="right">
+      <input class="money tinyInput" data-role="price" inputmode="decimal" value="${seed.price!=null ? fmt(seed.price) : ""}" placeholder="0" />
+    </td>
+    <td class="right">
+      <input class="money tinyInput" data-role="value" inputmode="decimal" value="${seed.value!=null ? fmt(seed.value) : "0"}" />
+    </td>
+    <td class="center">
+      <button class="delBtn" data-role="del" type="button">×</button>
+    </td>
+  `;
+  tbody.appendChild(tr);
+  attachRowListeners(tr);
+  autoValueForRow(tr);
+  buildBuyTable();
+  saveState();
+  drawBeforeChart();
 }
 
 function buildBuyTable(){
   const tbody = $("buyTable").querySelector("tbody");
   tbody.innerHTML = "";
-  holdings.forEach((h, idx)=>{
+  const hs = getHoldings();
+  hs.forEach(h=>{
     const tr = document.createElement("tr");
-    tr.dataset.idx = idx;
+    tr.dataset.ticker = h.t;
     tr.innerHTML = `
-      <td class="tickerCell">${escapeHtml(h.t)}</td>
+      <td class="tickerCell">${h.t}</td>
       <td class="right money" data-role="curPct">0.00%</td>
-      <td class="right money" data-role="tgtPct">${fmt(h.w)}%</td>
+      <td class="right money" data-role="tgtPct">${h.target.toFixed(2)}%</td>
       <td class="right money" data-role="diff">0.00%</td>
       <td class="right money" data-role="buy">$0.00</td>
       <td class="right money" data-role="newPct">0.00%</td>
@@ -555,144 +544,114 @@ function buildBuyTable(){
   });
 }
 
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-}
-
-/* =========================
-   Value calculation
-========================= */
-function calcValue(h){
-  const units = (h.units === "" ? null : Number(h.units));
-  const price = (h.price === "" ? null : Number(h.price));
-  if(units != null && price != null && isFinite(units) && isFinite(price)){
-    return units * price;
-  }
-  return 0;
-}
-
-function getCurrentValues(){
-  // read from table to respect manual value overrides
-  const rows = [...$("holdingsTable").querySelectorAll("tbody tr")];
-  return rows.map((tr, idx)=>{
-    const t = holdings[idx].t;
-    const w = num(tr.querySelector('input[data-role="w"]').value);
-    const unitsRaw = tr.querySelector('input[data-role="units"]').value;
-    const priceRaw = tr.querySelector('input[data-role="price"]').value;
-
-    const units = unitsRaw === "" ? "" : num(unitsRaw);
-    const price = priceRaw === "" ? "" : num(priceRaw);
-
-    const valueEl = tr.querySelector('input[data-role="value"]');
-    let v = num(valueEl.value);
-
-    // if units & price exist, force v = units*price
-    if(units !== "" && price !== ""){
-      v = units * price;
-      valueEl.value = fmt(v);
-    } else {
-      valueEl.value = fmt(v);
-    }
-
-    // sync back to model
-    holdings[idx].w = w;
-    holdings[idx].units = unitsRaw === "" ? "" : units;
-    holdings[idx].price = priceRaw === "" ? "" : price;
-
-    return { t, w, v };
-  });
-}
-
-/* =========================
-   Normalize targets to 100
-========================= */
+/***********************
+ * Normalize targets to 100
+ ***********************/
 function normalizeTargets(){
-  const vals = getCurrentValues();
-  const totalW = sum(vals.map(x=>x.w));
-  if(totalW <= 0){ setStatus("Targets are 0", "err"); return; }
-  vals.forEach((x,i)=>{
-    holdings[i].w = (x.w / totalW) * 100;
+  const rows = holdingsRows();
+  const targets = rows.map(r=>num(r.querySelector('[data-role="target"]').value));
+  const total = sum(targets);
+  if(total <= 0){
+    alert("Set some target percentages first.");
+    return;
+  }
+  rows.forEach((r,i)=>{
+    const t = num(r.querySelector('[data-role="target"]').value);
+    const newT = (t/total)*100;
+    r.querySelector('[data-role="target"]').value = fmt(newT);
   });
-  buildHoldingsTable();
+  saveState();
   buildBuyTable();
-  autosave();
-  autoRecalc();
-  setStatus("Targets normalized", "ok");
+  drawBeforeChart();
 }
 
-/* =========================
-   Rebalance: new money only
-========================= */
+/***********************
+ * Rebalance logic (new money only)
+ ***********************/
 function rebalance(){
   const minBuy = Math.max(1, Math.round(num($("minBuy").value)));
   const contribution = num($("contribution").value);
-  const cashA = num($("cashAvailable").value);
-  const cashX = num($("extraCash").value);
-  const cashR = num($("cashRemainder").value);
+  const cashBet = num($("cashBetashares").value);
+  const cashExtra = num($("cashExtra").value);
+  const cashRem = num($("cashRemainder").value);
 
-  const investable = contribution + cashA + cashX + cashR;
+  const investable = contribution + cashBet + cashExtra + cashRem;
 
-  const vals = getCurrentValues();
-  const totalNow = sum(vals.map(x=>x.v));
-  const totalAfterTarget = totalNow + investable;
-
-  const totalW = sum(vals.map(x=>x.w));
-  if(totalW <= 0){
-    setSummary("Set Target % first", "err");
+  const holdings = getHoldings();
+  if(holdings.length === 0){
+    alert("Add at least 1 holding.");
     return;
   }
 
-  // current %
+  // compute values (prefer value input; if units*price exists it was auto-filled)
+  const values = holdings.map(h=>h.value);
+  const totalNow = sum(values);
+  const totalAfter = totalNow + investable;
+
+  // current pct
   const curPct = {};
-  vals.forEach(x=> curPct[x.t] = totalNow > 0 ? (x.v/totalNow)*100 : 0);
+  holdings.forEach(h=>{
+    curPct[h.t] = totalNow>0 ? (h.value/totalNow)*100 : 0;
+  });
 
   // target values after
-  const targetAfter = {};
-  vals.forEach(x=> targetAfter[x.t] = (x.w/totalW) * totalAfterTarget);
+  const targetValueAfter = {};
+  holdings.forEach(h=>{
+    targetValueAfter[h.t] = (h.target/100)*totalAfter;
+  });
 
   // deficits
-  const deficits = vals.map(x=> ({ t:x.t, d: Math.max(0, targetAfter[x.t] - x.v) }));
+  const deficits = holdings.map(h=>{
+    return { t:h.t, d: Math.max(0, targetValueAfter[h.t] - h.value) };
+  });
   const totalDef = sum(deficits.map(x=>x.d));
 
-  // allocate proportionally
+  // raw buys proportional to deficits, fallback proportional to target
   const rawBuys = {};
   if(totalDef <= 1e-9){
-    vals.forEach(x=> rawBuys[x.t] = (x.w/totalW) * investable);
+    holdings.forEach(h=>{
+      rawBuys[h.t] = (h.target/100)*investable;
+    });
   }else{
-    deficits.forEach(x=> rawBuys[x.t] = (x.d/totalDef) * investable);
+    deficits.forEach(x=>{
+      rawBuys[x.t] = (x.d/totalDef)*investable;
+    });
   }
 
-  // round down to min buy blocks
+  // round to minBuy blocks
   const buys = {};
   let used = 0;
-  vals.forEach(x=>{
-    const rb = Math.floor(rawBuys[x.t] / minBuy) * minBuy;
-    buys[x.t] = rb;
+  holdings.forEach(h=>{
+    const rb = Math.floor((rawBuys[h.t]||0) / minBuy) * minBuy;
+    buys[h.t] = rb;
     used += rb;
   });
+
   let remainder = investable - used;
   if(remainder < 0) remainder = 0;
 
-  // after values
+  // after values and new pct
   const afterValues = {};
-  vals.forEach(x=> afterValues[x.t] = x.v + (buys[x.t]||0));
+  holdings.forEach(h=>{
+    afterValues[h.t] = h.value + (buys[h.t]||0);
+  });
   const totalAfterReal = sum(Object.values(afterValues)) + remainder;
-
   const newPct = {};
-  vals.forEach(x=>{
-    newPct[x.t] = totalAfterReal > 0 ? (afterValues[x.t]/totalAfterReal)*100 : 0;
+  holdings.forEach(h=>{
+    newPct[h.t] = totalAfterReal>0 ? (afterValues[h.t]/totalAfterReal)*100 : 0;
   });
 
   // render buy table
   const rows = [...$("buyTable").querySelectorAll("tbody tr")];
-  rows.forEach((r, i)=>{
-    const t = vals[i].t;
-    const tgtPct = (vals[i].w/totalW)*100;
+  rows.forEach(r=>{
+    const t = r.dataset.ticker;
+    const h = holdings.find(x=>x.t===t);
     const cur = curPct[t] || 0;
-    const diff = cur - tgtPct;
+    const tgt = h ? h.target : 0;
+    const diff = cur - tgt;
 
     r.querySelector('[data-role="curPct"]').textContent = cur.toFixed(2) + "%";
-    r.querySelector('[data-role="tgtPct"]').textContent = tgtPct.toFixed(2) + "%";
+    r.querySelector('[data-role="tgtPct"]').textContent = (tgt||0).toFixed(2) + "%";
     r.querySelector('[data-role="diff"]').textContent = (diff>=0?"+":"") + diff.toFixed(2) + "%";
     r.querySelector('[data-role="buy"]').textContent = "$" + fmt(buys[t] || 0);
     r.querySelector('[data-role="newPct"]').textContent = (newPct[t]||0).toFixed(2) + "%";
@@ -701,36 +660,37 @@ function rebalance(){
   $("investedOut").value = fmt(used);
   $("remainderOut").value = fmt(remainder);
   $("postTotalOut").value = fmt(totalAfterReal);
+  $("summaryBadge").textContent = `Investable: $${fmt(investable)} • Used: $${fmt(used)} • Leftover: $${fmt(remainder)}`;
 
-  setSummary(`Investable: $${fmt(investable)} • Used: $${fmt(used)} • Leftover: $${fmt(remainder)}`, "ok");
-
-  // update remainder field
+  // persist remainder
   $("cashRemainder").value = fmt(remainder);
 
-  // charts
-  drawCharts(vals.map(x=>x.t), vals.map(x=>x.v), vals.map(x=>afterValues[x.t]||0));
+  drawCharts(holdings.map(h=>h.t), holdings.map(h=>h.value), holdings.map(h=>afterValues[h.t]||0));
 
-  autosave();
+  saveState();
 }
 
-/* =========================
-   Charts
-========================= */
+/***********************
+ * Charts
+ ***********************/
 let chartBefore, chartAfter;
 
 function chartConfig(labels, data){
-  const colors = labels.map(l => colorFromString(l));
+  const colors = labels.map((_,i)=>randColor(i));
   return {
-    type: "doughnut",
-    data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 1, borderColor: "rgba(42,48,64,.7)" }] },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position:"bottom", labels:{ color:"#ffffff", boxWidth:12 } },
-        tooltip: {
-          callbacks: {
-            label: (ctx) => {
-              const v = ctx.raw || 0;
+    type:"doughnut",
+    data:{ labels, datasets:[{ data, backgroundColor: colors, borderWidth:1, borderColor:"rgba(42,48,64,.7)" }] },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{
+          position:"bottom",
+          labels:{ color:"#ffffff", boxWidth:12 }
+        },
+        tooltip:{
+          callbacks:{
+            label:(ctx)=>{
+              const v = ctx.raw||0;
               const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
               const pct = total>0 ? (v/total*100) : 0;
               return ` ${ctx.label}: $${fmt(v)} (${pct.toFixed(2)}%)`;
@@ -743,6 +703,15 @@ function chartConfig(labels, data){
   };
 }
 
+function drawBeforeChart(){
+  const hs = getHoldings();
+  const labels = hs.map(h=>h.t);
+  const data = hs.map(h=>h.value);
+  const c1 = $("chartBefore").getContext("2d");
+  if(chartBefore) chartBefore.destroy();
+  chartBefore = new Chart(c1, chartConfig(labels, data));
+}
+
 function drawCharts(labels, beforeData, afterData){
   const c1 = $("chartBefore").getContext("2d");
   const c2 = $("chartAfter").getContext("2d");
@@ -752,188 +721,119 @@ function drawCharts(labels, beforeData, afterData){
   chartAfter  = new Chart(c2, chartConfig(labels, afterData));
 }
 
-/* =========================
-   Live pricing from CSV
-   CSV format expected: columns include "ticker" and "price" (case-insensitive),
-   OR first column = ticker, second column = price.
-========================= */
+/***********************
+ * Fetch prices from CSV
+ ***********************/
 async function fetchPrices(){
   const url = $("csvUrl").value.trim();
   if(!url){
-    setStatus("Paste a CSV URL first", "err");
+    alert("Paste a published CSV URL first.");
     return;
   }
-  setStatus("Fetching prices…");
-
   try{
     const res = await fetch(url, { cache:"no-store" });
-    if(!res.ok) throw new Error("HTTP " + res.status);
+    if(!res.ok) throw new Error("Fetch failed");
     const text = await res.text();
-    const map = parseCsvToPriceMap(text);
+    const rows = parseCSV(text);
+    if(rows.length < 2) throw new Error("CSV empty");
 
-    // apply to holdings: match by h.symbol if set, else by h.t
-    const tbodyRows = [...$("holdingsTable").querySelectorAll("tbody tr")];
-    tbodyRows.forEach((tr, idx)=>{
-      const key = (holdings[idx].symbol || holdings[idx].t || "").toUpperCase();
-      const price = map[key];
-      if(price != null){
-        tr.querySelector('input[data-role="price"]').value = fmt(price);
+    // detect header
+    const header = rows[0].map(h=>h.toLowerCase());
+    const tIdx = header.findIndex(h=>["ticker","symbol","code"].includes(h));
+    const pIdx = header.findIndex(h=>["price","last","close"].includes(h));
+    if(tIdx === -1 || pIdx === -1){
+      alert("CSV must have columns like: ticker,price");
+      return;
+    }
+
+    const map = {};
+    rows.slice(1).forEach(r=>{
+      const t = (r[tIdx]||"").trim().toUpperCase();
+      const p = num(r[pIdx]);
+      if(t && p>0) map[t]=p;
+    });
+
+    // apply prices and update value if units exist
+    holdingsRows().forEach(r=>{
+      const t = (r.querySelector('[data-role="ticker"]').value||"").trim().toUpperCase();
+      if(map[t]!=null){
+        r.querySelector('[data-role="price"]').value = fmt(map[t]);
+        autoValueForRow(r);
       }
     });
 
-    // trigger recalc
-    autosave();
-    autoRecalc();
-    setStatus("Prices updated", "ok");
+    setStatus("Prices updated", true);
+    buildBuyTable();
+    drawBeforeChart();
+    saveState();
   }catch(e){
-    console.error(e);
-    setStatus("Fetch failed (check CSV)", "err");
+    setStatus("Price fetch error", false);
+    alert("Could not fetch prices. Check the CSV link is published and accessible.");
   }
 }
 
-function parseCsvToPriceMap(csvText){
-  const lines = csvText.split(/\r?\n/).filter(Boolean);
-  if(lines.length < 2) return {};
-  const rows = lines.map(l => l.split(",").map(s=>s.replace(/^"|"$/g,"").trim()));
-  const header = rows[0].map(h=>h.toLowerCase());
-
-  let tickerIdx = header.indexOf("ticker");
-  let priceIdx  = header.indexOf("price");
-
-  const map = {};
-  if(tickerIdx !== -1 && priceIdx !== -1){
-    for(let i=1;i<rows.length;i++){
-      const t = (rows[i][tickerIdx]||"").toUpperCase();
-      const p = num(rows[i][priceIdx]);
-      if(t) map[t]=p;
-    }
-    return map;
-  }
-
-  // fallback: col0=ticker, col1=price
-  for(let i=1;i<rows.length;i++){
-    const t = (rows[i][0]||"").toUpperCase();
-    const p = num(rows[i][1]);
-    if(t) map[t]=p;
-  }
-  return map;
-}
-
-/* =========================
-   Save / Load
-========================= */
-function autosave(){
+/***********************
+ * Save/Load
+ ***********************/
+function saveState(){
   const state = {
     contribution: num($("contribution").value),
-    cashAvailable: num($("cashAvailable").value),
-    extraCash: num($("extraCash").value),
+    cashBetashares: num($("cashBetashares").value),
+    cashExtra: num($("cashExtra").value),
     cashRemainder: num($("cashRemainder").value),
     minBuy: num($("minBuy").value),
     csvUrl: $("csvUrl").value.trim(),
-    holdings
+    holdings: holdingsRows().map(r=>({
+      t: (r.querySelector('[data-role="ticker"]').value||"").trim().toUpperCase(),
+      target: num(r.querySelector('[data-role="target"]').value),
+      units: num(r.querySelector('[data-role="units"]').value),
+      price: num(r.querySelector('[data-role="price"]').value),
+      value: num(r.querySelector('[data-role="value"]').value),
+    }))
   };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
-function saveNow(){
-  autosave();
-  setStatus("Saved", "ok");
-  setTimeout(()=>setStatus("Ready"), 900);
-}
-
 function loadState(){
   const raw = localStorage.getItem(STORAGE_KEY);
-  if(!raw) return false;
+  if(!raw){
+    // sensible starter rows
+    addHoldingRow({t:"A200", target:25});
+    addHoldingRow({t:"IVV", target:55});
+    addHoldingRow({t:"DFND", target:10});
+    addHoldingRow({t:"DRUG", target:10});
+    buildBuyTable();
+    drawBeforeChart();
+    return;
+  }
   try{
     const s = JSON.parse(raw);
-    $("contribution").value = fmt(s.contribution || 0);
-    $("cashAvailable").value = fmt(s.cashAvailable || 0);
-    $("extraCash").value = fmt(s.extraCash || 0);
-    $("cashRemainder").value = fmt(s.cashRemainder || 0);
-    $("minBuy").value = (s.minBuy || 50);
-    $("csvUrl").value = s.csvUrl || "";
-    holdings = Array.isArray(s.holdings) ? s.holdings : [];
-    return true;
+    $("contribution").value = fmt(s.contribution||0);
+    $("cashBetashares").value = fmt(s.cashBetashares||0);
+    $("cashExtra").value = fmt(s.cashExtra||0);
+    $("cashRemainder").value = fmt(s.cashRemainder||0);
+    $("minBuy").value = (s.minBuy||50);
+    $("csvUrl").value = (s.csvUrl||"");
+
+    // rebuild rows
+    $("holdingsTable").querySelector("tbody").innerHTML = "";
+    (s.holdings||[]).forEach(h=>addHoldingRow(h));
+    buildBuyTable();
+    drawBeforeChart();
   }catch(e){
-    return false;
+    localStorage.removeItem(STORAGE_KEY);
   }
 }
 
 function resetAll(){
-  if(!confirm("Reset this page to zero and remove all holdings (on this device)?")) return;
+  if(!confirm("Clear all saved data on this device?")) return;
   localStorage.removeItem(STORAGE_KEY);
-  holdings = [];
-  $("contribution").value = "0";
-  $("cashAvailable").value = "0";
-  $("extraCash").value = "0";
-  $("cashRemainder").value = "0";
-  $("minBuy").value = "50";
-  $("csvUrl").value = "";
-  buildHoldingsTable();
-  buildBuyTable();
-  drawCharts([], [], []);
-  $("investedOut").value = "";
-  $("remainderOut").value = "";
-  $("postTotalOut").value = "";
-  setSummary("—");
-  setStatus("Reset", "ok");
-  setTimeout(()=>setStatus("Ready"), 900);
+  location.reload();
 }
 
-/* =========================
-   Auto recalc as you type
-========================= */
-let recalcTimer = null;
-function autoRecalc(){
-  if(recalcTimer) clearTimeout(recalcTimer);
-  recalcTimer = setTimeout(()=>{
-    // update value fields + charts immediately
-    const vals = getCurrentValues();
-    buildBuyTable(); // ensures rows align if holdings changed
-    drawCharts(vals.map(x=>x.t), vals.map(x=>x.v), vals.map(x=>x.v));
-  }, 80);
-}
-
-/* =========================
-   Add holding modal
-========================= */
-function showModal(on){
-  $("modalBack").style.display = on ? "flex" : "none";
-}
-function addHoldingFromModal(){
-  if(holdings.length >= MAX_HOLDINGS){
-    setStatus("Max 50 holdings reached", "err");
-    return;
-  }
-  const t = $("mTicker").value.trim().toUpperCase();
-  const w = num($("mTarget").value);
-  const symbol = $("mSymbol").value.trim().toUpperCase();
-  const units = $("mUnits").value.trim() === "" ? "" : num($("mUnits").value);
-  const price = $("mPrice").value.trim() === "" ? "" : num($("mPrice").value);
-
-  if(!t){ setStatus("Ticker required", "err"); return; }
-  holdings.push({ t, w: w||0, symbol: symbol||"", units, price });
-
-  // clear modal
-  $("mTicker").value = "";
-  $("mTarget").value = "";
-  $("mSymbol").value = "";
-  $("mUnits").value = "";
-  $("mPrice").value = "";
-
-  showModal(false);
-
-  buildHoldingsTable();
-  buildBuyTable();
-  autosave();
-  autoRecalc();
-  setStatus("Holding added", "ok");
-  setTimeout(()=>setStatus("Ready"), 900);
-}
-
-/* =========================
-   Init
-========================= */
+/***********************
+ * Init
+ ***********************/
 function init(){
   $("logoImg").src = LOGO_FILE;
 
@@ -941,46 +841,25 @@ function init(){
   document.querySelectorAll(".btnQuick").forEach(b=>{
     b.addEventListener("click", ()=>{
       $("contribution").value = fmt(num(b.dataset.q));
-      autosave();
-      autoRecalc();
+      saveState();
     });
   });
 
   $("calcBtn").addEventListener("click", rebalance);
-  $("fetchBtn").addEventListener("click", fetchPrices);
-  $("normalizeBtn").addEventListener("click", normalizeTargets);
-
-  $("saveBtn").addEventListener("click", saveNow);
-  $("saveBtnTop").addEventListener("click", saveNow);
+  $("saveBtn").addEventListener("click", ()=>{ saveState(); setStatus("Saved", true); });
   $("resetBtn").addEventListener("click", resetAll);
+  $("addBtn").addEventListener("click", ()=>addHoldingRow({t:"",target:0}));
+  $("normBtn").addEventListener("click", normalizeTargets);
+  $("fetchBtn").addEventListener("click", fetchPrices);
 
-  // modal
-  $("addBtn").addEventListener("click", ()=>showModal(true));
-  $("mCancel").addEventListener("click", ()=>showModal(false));
-  $("modalBack").addEventListener("click", (e)=>{ if(e.target.id==="modalBack") showModal(false); });
-  $("mAdd").addEventListener("click", addHoldingFromModal);
-
-  // autosave as user edits cash fields
-  ["contribution","cashAvailable","extraCash","cashRemainder","minBuy","csvUrl"].forEach(id=>{
-    $(id).addEventListener("input", ()=>{ autosave(); autoRecalc(); });
+  // Autosave on core fields + live update charts
+  ["contribution","cashBetashares","cashExtra","cashRemainder","minBuy","csvUrl"].forEach(id=>{
+    $(id).addEventListener("input", ()=>{ saveState(); });
   });
 
-  // load
-  const loaded = loadState();
-  if(!loaded){
-    // start empty with a helpful example row (optional)
-    holdings = [
-      { t:"A200", w:13, symbol:"", units:"", price:"" },
-      { t:"IVV",  w:13, symbol:"", units:"", price:"" },
-    ];
-  }
-
-  buildHoldingsTable();
-  buildBuyTable();
-
-  const vals = getCurrentValues();
-  drawCharts(vals.map(x=>x.t), vals.map(x=>x.v), vals.map(x=>x.v));
+  loadState();
 }
+
 init();
 </script>
 </body>
