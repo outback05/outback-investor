@@ -1,0 +1,987 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Outback Investor — Generic Rebalance Builder</title>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#0f1115;
+      --card:#161a22;
+      --text:#e9edf5;
+      --muted:#98a2b3;
+      --line:#2a3040;
+      --accent:#d6a24a;
+      --yellow:#fff3b0;
+      --yellow2:#ffe082;
+      --danger:#ff5c5c;
+      --ok:#4ade80;
+      --shadow: 0 12px 30px rgba(0,0,0,.35);
+      --radius:16px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background: radial-gradient(1200px 700px at 20% 10%, rgba(214,162,74,.18), transparent 60%),
+                  radial-gradient(900px 600px at 80% 0%, rgba(255,224,130,.10), transparent 60%),
+                  var(--bg);
+    }
+    .wrap{max-width:1220px;margin:0 auto;padding:22px}
+    .topbar{
+      display:flex;align-items:center;gap:14px;
+      background:rgba(22,26,34,.6);
+      border:1px solid rgba(42,48,64,.7);
+      box-shadow:var(--shadow);
+      border-radius:var(--radius);
+      padding:14px 16px;
+      backdrop-filter: blur(10px);
+    }
+    .logo{
+      width:38px;height:38px;flex:0 0 38px;
+      display:grid;place-items:center;
+      border-radius:12px;
+      background: rgba(214,162,74,.10);
+      border:1px solid rgba(214,162,74,.25);
+      overflow:hidden;
+    }
+    .logo img{width:28px;height:28px;object-fit:contain;filter: drop-shadow(0 6px 10px rgba(0,0,0,.35));}
+    .titles{display:flex;flex-direction:column;gap:2px}
+    .h1{font-size:18px;font-weight:900;letter-spacing:.2px}
+    .h2{font-size:13px;color:var(--muted)}
+    .rightPill{
+      margin-left:auto;display:flex;align-items:center;gap:10px;
+      font-size:12px;color:var(--muted);
+    }
+    .badge{
+      font-size:11px;padding:6px 10px;border-radius:999px;
+      border:1px solid rgba(42,48,64,.85);color:var(--muted);
+    }
+    .badge.ok{color:var(--ok)}
+    .badge.err{color:var(--danger)}
+    .grid{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns: 520px 1fr;
+      gap:14px;
+    }
+    @media (max-width:1040px){ .grid{grid-template-columns:1fr} }
+
+    .card{
+      background:rgba(22,26,34,.75);
+      border:1px solid rgba(42,48,64,.75);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:14px;
+    }
+    .sectionTitle{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:10px;font-weight:900;font-size:14px;margin:0 0 10px 0;
+      letter-spacing:.2px;
+    }
+    .subtle{font-size:12px;color:var(--muted);line-height:1.35}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+    input,select,button{
+      font-family:inherit;
+      border-radius:12px;border:1px solid rgba(42,48,64,.9);
+      background: rgba(15,17,21,.75);
+      color:var(--text);
+      padding:10px 12px;outline:none;
+    }
+    input:focus,select:focus{
+      border-color:rgba(214,162,74,.6);
+      box-shadow:0 0 0 3px rgba(214,162,74,.15)
+    }
+    .field{flex:1;min-width:170px}
+    .field.small{min-width:120px;flex:0 0 120px}
+    .field.tiny{min-width:90px;flex:0 0 90px}
+    .btn{
+      cursor:pointer;
+      border:1px solid rgba(214,162,74,.45);
+      background: rgba(214,162,74,.12);
+      color:var(--text);
+      font-weight:800;
+    }
+    .btn:hover{background: rgba(214,162,74,.18)}
+    .btn2{
+      cursor:pointer;
+      border:1px solid rgba(42,48,64,.9);
+      background: rgba(15,17,21,.55);
+      color:var(--text);
+      font-weight:800;
+    }
+    .btn2:hover{background: rgba(15,17,21,.85)}
+    .btnDanger{
+      cursor:pointer;
+      border:1px solid rgba(255,92,92,.45);
+      background: rgba(255,92,92,.10);
+      color:var(--text);
+      font-weight:800;
+    }
+    .btnDanger:hover{background: rgba(255,92,92,.18)}
+    .btnQuick{
+      padding:8px 10px;border-radius:10px;font-size:12px;
+      border:1px solid rgba(42,48,64,.9);
+      background: rgba(15,17,21,.55);
+      cursor:pointer;color:var(--text);
+    }
+    .btnQuick:hover{border-color:rgba(214,162,74,.55)}
+    .highlightInput{
+      background: var(--yellow);
+      color:#111;
+      border:1px solid rgba(214,162,74,.75);
+      font-weight:900;
+    }
+    .boldYellow{
+      color:#111;background: var(--yellow2);
+      padding:6px 10px;border-radius:12px;font-weight:900;display:inline-block;
+    }
+    .hr{height:1px;background:rgba(42,48,64,.75);margin:12px 0}
+    .money{font-variant-numeric: tabular-nums}
+    .tableWrap{overflow:auto;max-width:100%}
+    table{width:100%;border-collapse:separate;border-spacing:0 10px;margin-top:8px;min-width:680px}
+    th{text-align:left;font-size:11px;color:var(--muted);font-weight:800;padding:0 10px;white-space:nowrap}
+    td{
+      padding:10px;
+      background: rgba(15,17,21,.55);
+      border:1px solid rgba(42,48,64,.75);
+      vertical-align:middle;
+    }
+    tr td:first-child{border-radius:12px 0 0 12px}
+    tr td:last-child{border-radius:0 12px 12px 0}
+    .tickerCell{
+      background: rgba(255,224,130,.10);
+      border:1px solid rgba(255,224,130,.35);
+      font-family:var(--mono);
+      font-weight:900;
+      letter-spacing:.3px;
+      text-transform:uppercase;
+      color:#fff; /* ticker text WHITE */
+      white-space:nowrap;
+    }
+    .right{text-align:right}
+    .center{text-align:center}
+    .twoCharts{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      align-items:stretch;
+    }
+    @media (max-width:780px){.twoCharts{grid-template-columns:1fr}}
+    canvas{max-width:100%}
+    .modalBack{
+      position:fixed;inset:0;background:rgba(0,0,0,.65);
+      display:none;align-items:center;justify-content:center;padding:18px;z-index:9999;
+    }
+    .modal{
+      width:min(560px, 100%);
+      background: rgba(22,26,34,.92);
+      border:1px solid rgba(42,48,64,.85);
+      box-shadow:var(--shadow);
+      border-radius:18px;
+      padding:16px;
+    }
+    .modalTitle{font-size:16px;font-weight:900;margin:0 0 8px}
+    .hint{font-size:12px;color:var(--muted);margin:0 0 10px;line-height:1.35}
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="logo" title="Outback Investor">
+      <img id="logoImg" alt="Outback Investor logo" />
+    </div>
+    <div class="titles">
+      <div class="h1">Outback Investor <span style="opacity:.7">/</span> Generic Rebalance Builder</div>
+      <div class="h2">Rebalance with new money only • Min buy $50 • Add up to 50 holdings</div>
+    </div>
+    <div class="rightPill">
+      <span class="badge" id="statusBadge">Ready</span>
+      <button class="btn2" id="saveBtnTop" type="button">Save</button>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <!-- LEFT -->
+    <div class="card">
+      <div class="sectionTitle">Welcome</div>
+
+      <div class="row">
+        <div class="field">
+          <label><strong>New Contribution ($)</strong></label>
+          <input id="contribution" class="highlightInput money" inputmode="decimal" placeholder="e.g. 480" value="0" />
+        </div>
+        <!-- Calculate beside contribution -->
+        <div class="field small">
+          <button class="btn" id="calcBtn" type="button" style="width:100%;">Calculate</button>
+        </div>
+      </div>
+
+      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btnQuick" type="button" data-q="50">$50</button>
+        <button class="btnQuick" type="button" data-q="100">$100</button>
+        <button class="btnQuick" type="button" data-q="150">$150</button>
+        <button class="btnQuick" type="button" data-q="200">$200</button>
+        <button class="btnQuick" type="button" data-q="250">$250</button>
+        <button class="btnQuick" type="button" data-q="480">$480</button>
+        <button class="btnQuick" type="button" data-q="0">Clear</button>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="sectionTitle"><span class="boldYellow">Cash tracking</span></div>
+      <div class="row">
+        <div class="field">
+          <label>Cash Available to invest ($)</label>
+          <input id="cashAvailable" class="money" inputmode="decimal" value="0" />
+        </div>
+        <div class="field">
+          <label>Extra Cash Available to invest or consolidate ($)</label>
+          <input id="extraCash" class="money" inputmode="decimal" value="0" />
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:10px;">
+        <div class="field">
+          <label>Leftover cash for next investment ($)</label>
+          <input id="cashRemainder" class="money" inputmode="decimal" value="0" />
+        </div>
+        <div class="field tiny">
+          <label>Min buy</label>
+          <input id="minBuy" class="money" inputmode="decimal" value="50" />
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="sectionTitle">
+        <span class="boldYellow">Current holdings</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+          <button class="btn2" id="fetchBtn" type="button">Fetch prices</button>
+          <button class="btn" id="addBtn" type="button">+ Add holding</button>
+        </div>
+      </div>
+
+      <div class="subtle">
+        Enter Units and/or Price. Value auto-calculates immediately. Targets should total ~100%.
+      </div>
+
+      <div class="row" style="margin-top:10px;">
+        <div class="field">
+          <label>Live pricing CSV URL (optional)</label>
+          <input id="csvUrl" class="money" placeholder="paste your published CSV URL here" />
+        </div>
+        <div class="field tiny">
+          <button class="btn2" id="normalizeBtn" type="button" style="width:100%;">Normalize %</button>
+        </div>
+      </div>
+
+      <div class="tableWrap">
+        <table id="holdingsTable">
+          <thead>
+            <tr>
+              <th>Holdings (tickers)</th>
+              <th class="right">Target %</th>
+              <th class="right">Units</th>
+              <th class="right">Price</th>
+              <th class="right">Value ($)</th>
+              <th class="center">Del</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="row" style="margin-top:10px;">
+        <button class="btn2" id="saveBtn" type="button">Save now</button>
+        <button class="btn2" id="resetBtn" type="button">Reset</button>
+      </div>
+
+      <div class="subtle" style="margin-top:10px;">
+        <strong>Rebalance logic:</strong> Buy only (no selling). Allocate new money into underweight assets,
+        round each buy down to Min buy blocks. Any amount &lt; Min buy becomes leftover cash for next time.
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="card">
+      <div class="sectionTitle">
+        <span class="boldYellow">What to buy Now</span>
+        <span class="badge" id="summaryBadge">—</span>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>New investment ($)</label>
+          <input id="investedOut" class="money" readonly />
+        </div>
+        <div class="field">
+          <label>Leftover cash for next investment ($)</label>
+          <input id="remainderOut" class="money" readonly />
+        </div>
+        <div class="field">
+          <label>New Balance ($)</label>
+          <input id="postTotalOut" class="money highlightInput" readonly />
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="tableWrap">
+        <table id="buyTable" style="min-width:760px">
+          <thead>
+            <tr>
+              <th>Holdings (tickers)</th>
+              <th class="right">Current %</th>
+              <th class="right">Target %</th>
+              <th class="right">Diff</th>
+              <th class="right">Buy $</th>
+              <th class="right">New %</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="twoCharts">
+        <div class="card" style="padding:12px;">
+          <div class="sectionTitle" style="margin-bottom:8px;">Before</div>
+          <canvas id="chartBefore" height="220"></canvas>
+        </div>
+        <div class="card" style="padding:12px;">
+          <div class="sectionTitle" style="margin-bottom:8px;">After</div>
+          <canvas id="chartAfter" height="220"></canvas>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="sectionTitle">How to use (fortnightly routine)</div>
+      <ol class="subtle" style="margin:0;padding-left:18px;line-height:1.5;">
+        <li>Update holdings (Units/Price) — or press <strong>Fetch prices</strong>.</li>
+        <li>Set the <strong>New Contribution</strong> and any Cash fields.</li>
+        <li>Press <strong>Calculate</strong> — buy items with <strong>Buy $ &gt; 0</strong> (in Min buy blocks).</li>
+        <li>Leftover cash rolls into the next contribution. No selling needed.</li>
+      </ol>
+    </div>
+
+  </div>
+</div>
+
+<!-- Add Holding Modal -->
+<div class="modalBack" id="modalBack">
+  <div class="modal">
+    <div class="modalTitle">Add holding</div>
+    <p class="hint">
+      Ticker is what you want displayed (e.g. NDQ). “Price Symbol” is what your price feed uses (optional).
+      Example: for ASX you might use <code>ASX:NDQ</code> in your Google Sheet.
+    </p>
+
+    <div class="row">
+      <div class="field">
+        <label>Ticker (display)</label>
+        <input id="mTicker" placeholder="e.g. NDQ" />
+      </div>
+      <div class="field">
+        <label>Target %</label>
+        <input id="mTarget" inputmode="decimal" placeholder="e.g. 19.5" />
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:10px;">
+      <div class="field">
+        <label>Price Symbol (optional)</label>
+        <input id="mSymbol" placeholder="e.g. ASX:NDQ or CURRENCY:XAU" />
+      </div>
+      <div class="field">
+        <label>Starting Units (optional)</label>
+        <input id="mUnits" inputmode="decimal" placeholder="e.g. 10" />
+      </div>
+      <div class="field">
+        <label>Starting Price (optional)</label>
+        <input id="mPrice" inputmode="decimal" placeholder="e.g. 25.50" />
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:12px;justify-content:flex-end;">
+      <button class="btn2" id="mCancel" type="button">Cancel</button>
+      <button class="btn" id="mAdd" type="button">Add</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================
+   CONFIG
+========================= */
+const LOGO_FILE = "outback_symbol_extracted.png";
+const STORAGE_KEY = "outback_investor_generic_v1";
+const MAX_HOLDINGS = 50;
+
+/* =========================
+   Helpers
+========================= */
+const $ = (id) => document.getElementById(id);
+
+const fmt = (n) => (isFinite(n) ? Number(n).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) : "0.00");
+const num = (v) => {
+  const x = parseFloat(String(v ?? "").replace(/[^0-9.\-]/g,""));
+  return isFinite(x) ? x : 0;
+};
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const sum = (arr) => arr.reduce((a,b)=>a+b,0);
+
+function setStatus(text, kind=""){
+  $("statusBadge").textContent = text;
+  $("statusBadge").className = "badge" + (kind ? " "+kind : "");
+}
+function setSummary(text, kind=""){
+  $("summaryBadge").textContent = text;
+  $("summaryBadge").className = "badge" + (kind ? " "+kind : "");
+}
+
+/* deterministic-ish color from string */
+function colorFromString(str){
+  let h = 0;
+  for (let i=0;i<str.length;i++) h = (h*31 + str.charCodeAt(i)) >>> 0;
+  const hue = h % 360;
+  return `hsl(${hue} 75% 55%)`;
+}
+
+/* =========================
+   Data model
+   holdings: [{t, w, symbol, units, price}]
+========================= */
+let holdings = [];   // loaded from storage
+
+/* =========================
+   DOM: build tables
+========================= */
+function buildHoldingsTable(){
+  const tbody = $("holdingsTable").querySelector("tbody");
+  tbody.innerHTML = "";
+  holdings.forEach((h, idx)=>{
+    const tr = document.createElement("tr");
+    tr.dataset.idx = idx;
+    tr.innerHTML = `
+      <td class="tickerCell">${escapeHtml(h.t)}</td>
+      <td class="right"><input data-role="w" class="money" inputmode="decimal" value="${fmt(h.w)}"></td>
+      <td class="right"><input data-role="units" class="money" inputmode="decimal" value="${h.units ?? ""}"></td>
+      <td class="right"><input data-role="price" class="money" inputmode="decimal" value="${h.price ?? ""}"></td>
+      <td class="right"><input data-role="value" class="money" inputmode="decimal" value="${fmt(calcValue(h))}"></td>
+      <td class="center"><button class="btnDanger" data-role="del" type="button">X</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // wire events
+  [...tbody.querySelectorAll("tr")].forEach(tr=>{
+    const idx = Number(tr.dataset.idx);
+
+    const wEl = tr.querySelector('input[data-role="w"]');
+    const uEl = tr.querySelector('input[data-role="units"]');
+    const pEl = tr.querySelector('input[data-role="price"]');
+    const vEl = tr.querySelector('input[data-role="value"]');
+    const delBtn = tr.querySelector('button[data-role="del"]');
+
+    const recalcRow = () => {
+      holdings[idx].w = num(wEl.value);
+      holdings[idx].units = uEl.value === "" ? "" : num(uEl.value);
+      holdings[idx].price = pEl.value === "" ? "" : num(pEl.value);
+
+      // If units & price exist, compute value
+      if(holdings[idx].units !== "" && holdings[idx].price !== ""){
+        const v = calcValue(holdings[idx]);
+        vEl.value = fmt(v);
+      } else {
+        // allow manual value entry too:
+        const manual = num(vEl.value);
+        vEl.value = fmt(manual);
+      }
+
+      // Auto-update charts/buys as you type
+      autosave();
+      autoRecalc();
+    };
+
+    wEl.addEventListener("input", recalcRow);
+    uEl.addEventListener("input", recalcRow);
+    pEl.addEventListener("input", recalcRow);
+
+    vEl.addEventListener("input", ()=>{
+      // manual override if units/price are empty
+      autosave();
+      autoRecalc();
+    });
+
+    delBtn.addEventListener("click", ()=>{
+      holdings.splice(idx, 1);
+      buildHoldingsTable();
+      buildBuyTable();
+      autosave();
+      autoRecalc();
+    });
+  });
+}
+
+function buildBuyTable(){
+  const tbody = $("buyTable").querySelector("tbody");
+  tbody.innerHTML = "";
+  holdings.forEach((h, idx)=>{
+    const tr = document.createElement("tr");
+    tr.dataset.idx = idx;
+    tr.innerHTML = `
+      <td class="tickerCell">${escapeHtml(h.t)}</td>
+      <td class="right money" data-role="curPct">0.00%</td>
+      <td class="right money" data-role="tgtPct">${fmt(h.w)}%</td>
+      <td class="right money" data-role="diff">0.00%</td>
+      <td class="right money" data-role="buy">$0.00</td>
+      <td class="right money" data-role="newPct">0.00%</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+/* =========================
+   Value calculation
+========================= */
+function calcValue(h){
+  const units = (h.units === "" ? null : Number(h.units));
+  const price = (h.price === "" ? null : Number(h.price));
+  if(units != null && price != null && isFinite(units) && isFinite(price)){
+    return units * price;
+  }
+  return 0;
+}
+
+function getCurrentValues(){
+  // read from table to respect manual value overrides
+  const rows = [...$("holdingsTable").querySelectorAll("tbody tr")];
+  return rows.map((tr, idx)=>{
+    const t = holdings[idx].t;
+    const w = num(tr.querySelector('input[data-role="w"]').value);
+    const unitsRaw = tr.querySelector('input[data-role="units"]').value;
+    const priceRaw = tr.querySelector('input[data-role="price"]').value;
+
+    const units = unitsRaw === "" ? "" : num(unitsRaw);
+    const price = priceRaw === "" ? "" : num(priceRaw);
+
+    const valueEl = tr.querySelector('input[data-role="value"]');
+    let v = num(valueEl.value);
+
+    // if units & price exist, force v = units*price
+    if(units !== "" && price !== ""){
+      v = units * price;
+      valueEl.value = fmt(v);
+    } else {
+      valueEl.value = fmt(v);
+    }
+
+    // sync back to model
+    holdings[idx].w = w;
+    holdings[idx].units = unitsRaw === "" ? "" : units;
+    holdings[idx].price = priceRaw === "" ? "" : price;
+
+    return { t, w, v };
+  });
+}
+
+/* =========================
+   Normalize targets to 100
+========================= */
+function normalizeTargets(){
+  const vals = getCurrentValues();
+  const totalW = sum(vals.map(x=>x.w));
+  if(totalW <= 0){ setStatus("Targets are 0", "err"); return; }
+  vals.forEach((x,i)=>{
+    holdings[i].w = (x.w / totalW) * 100;
+  });
+  buildHoldingsTable();
+  buildBuyTable();
+  autosave();
+  autoRecalc();
+  setStatus("Targets normalized", "ok");
+}
+
+/* =========================
+   Rebalance: new money only
+========================= */
+function rebalance(){
+  const minBuy = Math.max(1, Math.round(num($("minBuy").value)));
+  const contribution = num($("contribution").value);
+  const cashA = num($("cashAvailable").value);
+  const cashX = num($("extraCash").value);
+  const cashR = num($("cashRemainder").value);
+
+  const investable = contribution + cashA + cashX + cashR;
+
+  const vals = getCurrentValues();
+  const totalNow = sum(vals.map(x=>x.v));
+  const totalAfterTarget = totalNow + investable;
+
+  const totalW = sum(vals.map(x=>x.w));
+  if(totalW <= 0){
+    setSummary("Set Target % first", "err");
+    return;
+  }
+
+  // current %
+  const curPct = {};
+  vals.forEach(x=> curPct[x.t] = totalNow > 0 ? (x.v/totalNow)*100 : 0);
+
+  // target values after
+  const targetAfter = {};
+  vals.forEach(x=> targetAfter[x.t] = (x.w/totalW) * totalAfterTarget);
+
+  // deficits
+  const deficits = vals.map(x=> ({ t:x.t, d: Math.max(0, targetAfter[x.t] - x.v) }));
+  const totalDef = sum(deficits.map(x=>x.d));
+
+  // allocate proportionally
+  const rawBuys = {};
+  if(totalDef <= 1e-9){
+    vals.forEach(x=> rawBuys[x.t] = (x.w/totalW) * investable);
+  }else{
+    deficits.forEach(x=> rawBuys[x.t] = (x.d/totalDef) * investable);
+  }
+
+  // round down to min buy blocks
+  const buys = {};
+  let used = 0;
+  vals.forEach(x=>{
+    const rb = Math.floor(rawBuys[x.t] / minBuy) * minBuy;
+    buys[x.t] = rb;
+    used += rb;
+  });
+  let remainder = investable - used;
+  if(remainder < 0) remainder = 0;
+
+  // after values
+  const afterValues = {};
+  vals.forEach(x=> afterValues[x.t] = x.v + (buys[x.t]||0));
+  const totalAfterReal = sum(Object.values(afterValues)) + remainder;
+
+  const newPct = {};
+  vals.forEach(x=>{
+    newPct[x.t] = totalAfterReal > 0 ? (afterValues[x.t]/totalAfterReal)*100 : 0;
+  });
+
+  // render buy table
+  const rows = [...$("buyTable").querySelectorAll("tbody tr")];
+  rows.forEach((r, i)=>{
+    const t = vals[i].t;
+    const tgtPct = (vals[i].w/totalW)*100;
+    const cur = curPct[t] || 0;
+    const diff = cur - tgtPct;
+
+    r.querySelector('[data-role="curPct"]').textContent = cur.toFixed(2) + "%";
+    r.querySelector('[data-role="tgtPct"]').textContent = tgtPct.toFixed(2) + "%";
+    r.querySelector('[data-role="diff"]').textContent = (diff>=0?"+":"") + diff.toFixed(2) + "%";
+    r.querySelector('[data-role="buy"]').textContent = "$" + fmt(buys[t] || 0);
+    r.querySelector('[data-role="newPct"]').textContent = (newPct[t]||0).toFixed(2) + "%";
+  });
+
+  $("investedOut").value = fmt(used);
+  $("remainderOut").value = fmt(remainder);
+  $("postTotalOut").value = fmt(totalAfterReal);
+
+  setSummary(`Investable: $${fmt(investable)} • Used: $${fmt(used)} • Leftover: $${fmt(remainder)}`, "ok");
+
+  // update remainder field
+  $("cashRemainder").value = fmt(remainder);
+
+  // charts
+  drawCharts(vals.map(x=>x.t), vals.map(x=>x.v), vals.map(x=>afterValues[x.t]||0));
+
+  autosave();
+}
+
+/* =========================
+   Charts
+========================= */
+let chartBefore, chartAfter;
+
+function chartConfig(labels, data){
+  const colors = labels.map(l => colorFromString(l));
+  return {
+    type: "doughnut",
+    data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 1, borderColor: "rgba(42,48,64,.7)" }] },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position:"bottom", labels:{ color:"#ffffff", boxWidth:12 } },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const v = ctx.raw || 0;
+              const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
+              const pct = total>0 ? (v/total*100) : 0;
+              return ` ${ctx.label}: $${fmt(v)} (${pct.toFixed(2)}%)`;
+            }
+          }
+        }
+      },
+      cutout:"62%"
+    }
+  };
+}
+
+function drawCharts(labels, beforeData, afterData){
+  const c1 = $("chartBefore").getContext("2d");
+  const c2 = $("chartAfter").getContext("2d");
+  if(chartBefore) chartBefore.destroy();
+  if(chartAfter) chartAfter.destroy();
+  chartBefore = new Chart(c1, chartConfig(labels, beforeData));
+  chartAfter  = new Chart(c2, chartConfig(labels, afterData));
+}
+
+/* =========================
+   Live pricing from CSV
+   CSV format expected: columns include "ticker" and "price" (case-insensitive),
+   OR first column = ticker, second column = price.
+========================= */
+async function fetchPrices(){
+  const url = $("csvUrl").value.trim();
+  if(!url){
+    setStatus("Paste a CSV URL first", "err");
+    return;
+  }
+  setStatus("Fetching prices…");
+
+  try{
+    const res = await fetch(url, { cache:"no-store" });
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    const text = await res.text();
+    const map = parseCsvToPriceMap(text);
+
+    // apply to holdings: match by h.symbol if set, else by h.t
+    const tbodyRows = [...$("holdingsTable").querySelectorAll("tbody tr")];
+    tbodyRows.forEach((tr, idx)=>{
+      const key = (holdings[idx].symbol || holdings[idx].t || "").toUpperCase();
+      const price = map[key];
+      if(price != null){
+        tr.querySelector('input[data-role="price"]').value = fmt(price);
+      }
+    });
+
+    // trigger recalc
+    autosave();
+    autoRecalc();
+    setStatus("Prices updated", "ok");
+  }catch(e){
+    console.error(e);
+    setStatus("Fetch failed (check CSV)", "err");
+  }
+}
+
+function parseCsvToPriceMap(csvText){
+  const lines = csvText.split(/\r?\n/).filter(Boolean);
+  if(lines.length < 2) return {};
+  const rows = lines.map(l => l.split(",").map(s=>s.replace(/^"|"$/g,"").trim()));
+  const header = rows[0].map(h=>h.toLowerCase());
+
+  let tickerIdx = header.indexOf("ticker");
+  let priceIdx  = header.indexOf("price");
+
+  const map = {};
+  if(tickerIdx !== -1 && priceIdx !== -1){
+    for(let i=1;i<rows.length;i++){
+      const t = (rows[i][tickerIdx]||"").toUpperCase();
+      const p = num(rows[i][priceIdx]);
+      if(t) map[t]=p;
+    }
+    return map;
+  }
+
+  // fallback: col0=ticker, col1=price
+  for(let i=1;i<rows.length;i++){
+    const t = (rows[i][0]||"").toUpperCase();
+    const p = num(rows[i][1]);
+    if(t) map[t]=p;
+  }
+  return map;
+}
+
+/* =========================
+   Save / Load
+========================= */
+function autosave(){
+  const state = {
+    contribution: num($("contribution").value),
+    cashAvailable: num($("cashAvailable").value),
+    extraCash: num($("extraCash").value),
+    cashRemainder: num($("cashRemainder").value),
+    minBuy: num($("minBuy").value),
+    csvUrl: $("csvUrl").value.trim(),
+    holdings
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function saveNow(){
+  autosave();
+  setStatus("Saved", "ok");
+  setTimeout(()=>setStatus("Ready"), 900);
+}
+
+function loadState(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if(!raw) return false;
+  try{
+    const s = JSON.parse(raw);
+    $("contribution").value = fmt(s.contribution || 0);
+    $("cashAvailable").value = fmt(s.cashAvailable || 0);
+    $("extraCash").value = fmt(s.extraCash || 0);
+    $("cashRemainder").value = fmt(s.cashRemainder || 0);
+    $("minBuy").value = (s.minBuy || 50);
+    $("csvUrl").value = s.csvUrl || "";
+    holdings = Array.isArray(s.holdings) ? s.holdings : [];
+    return true;
+  }catch(e){
+    return false;
+  }
+}
+
+function resetAll(){
+  if(!confirm("Reset this page to zero and remove all holdings (on this device)?")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  holdings = [];
+  $("contribution").value = "0";
+  $("cashAvailable").value = "0";
+  $("extraCash").value = "0";
+  $("cashRemainder").value = "0";
+  $("minBuy").value = "50";
+  $("csvUrl").value = "";
+  buildHoldingsTable();
+  buildBuyTable();
+  drawCharts([], [], []);
+  $("investedOut").value = "";
+  $("remainderOut").value = "";
+  $("postTotalOut").value = "";
+  setSummary("—");
+  setStatus("Reset", "ok");
+  setTimeout(()=>setStatus("Ready"), 900);
+}
+
+/* =========================
+   Auto recalc as you type
+========================= */
+let recalcTimer = null;
+function autoRecalc(){
+  if(recalcTimer) clearTimeout(recalcTimer);
+  recalcTimer = setTimeout(()=>{
+    // update value fields + charts immediately
+    const vals = getCurrentValues();
+    buildBuyTable(); // ensures rows align if holdings changed
+    drawCharts(vals.map(x=>x.t), vals.map(x=>x.v), vals.map(x=>x.v));
+  }, 80);
+}
+
+/* =========================
+   Add holding modal
+========================= */
+function showModal(on){
+  $("modalBack").style.display = on ? "flex" : "none";
+}
+function addHoldingFromModal(){
+  if(holdings.length >= MAX_HOLDINGS){
+    setStatus("Max 50 holdings reached", "err");
+    return;
+  }
+  const t = $("mTicker").value.trim().toUpperCase();
+  const w = num($("mTarget").value);
+  const symbol = $("mSymbol").value.trim().toUpperCase();
+  const units = $("mUnits").value.trim() === "" ? "" : num($("mUnits").value);
+  const price = $("mPrice").value.trim() === "" ? "" : num($("mPrice").value);
+
+  if(!t){ setStatus("Ticker required", "err"); return; }
+  holdings.push({ t, w: w||0, symbol: symbol||"", units, price });
+
+  // clear modal
+  $("mTicker").value = "";
+  $("mTarget").value = "";
+  $("mSymbol").value = "";
+  $("mUnits").value = "";
+  $("mPrice").value = "";
+
+  showModal(false);
+
+  buildHoldingsTable();
+  buildBuyTable();
+  autosave();
+  autoRecalc();
+  setStatus("Holding added", "ok");
+  setTimeout(()=>setStatus("Ready"), 900);
+}
+
+/* =========================
+   Init
+========================= */
+function init(){
+  $("logoImg").src = LOGO_FILE;
+
+  // quick buttons
+  document.querySelectorAll(".btnQuick").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      $("contribution").value = fmt(num(b.dataset.q));
+      autosave();
+      autoRecalc();
+    });
+  });
+
+  $("calcBtn").addEventListener("click", rebalance);
+  $("fetchBtn").addEventListener("click", fetchPrices);
+  $("normalizeBtn").addEventListener("click", normalizeTargets);
+
+  $("saveBtn").addEventListener("click", saveNow);
+  $("saveBtnTop").addEventListener("click", saveNow);
+  $("resetBtn").addEventListener("click", resetAll);
+
+  // modal
+  $("addBtn").addEventListener("click", ()=>showModal(true));
+  $("mCancel").addEventListener("click", ()=>showModal(false));
+  $("modalBack").addEventListener("click", (e)=>{ if(e.target.id==="modalBack") showModal(false); });
+  $("mAdd").addEventListener("click", addHoldingFromModal);
+
+  // autosave as user edits cash fields
+  ["contribution","cashAvailable","extraCash","cashRemainder","minBuy","csvUrl"].forEach(id=>{
+    $(id).addEventListener("input", ()=>{ autosave(); autoRecalc(); });
+  });
+
+  // load
+  const loaded = loadState();
+  if(!loaded){
+    // start empty with a helpful example row (optional)
+    holdings = [
+      { t:"A200", w:13, symbol:"", units:"", price:"" },
+      { t:"IVV",  w:13, symbol:"", units:"", price:"" },
+    ];
+  }
+
+  buildHoldingsTable();
+  buildBuyTable();
+
+  const vals = getCurrentValues();
+  drawCharts(vals.map(x=>x.t), vals.map(x=>x.v), vals.map(x=>x.v));
+}
+init();
+</script>
+</body>
+</html>
